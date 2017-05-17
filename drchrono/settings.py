@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=*l&a&rk7jmiw$3euke*z9lu-na!^j^i&ddejfik!ajqlaymmc'
+SECRET_KEY = 'fejjegW0rUu2CJE12IeB5JGf7BDu6YhoVTdSvCHmyJX2JngJvRRB5xwJVhWmDQ7cxQ2JlNw7TeyLbpTLSigpm0vjp6WAQpFNlzsUJtZULxzrkpcm0BB3Z9dDly2zOfTZ'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'drchrono',
     'social.apps.django_app.default',
+    #'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
