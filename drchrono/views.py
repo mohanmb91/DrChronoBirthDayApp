@@ -1,14 +1,12 @@
 # Create your views here.
 from StdSuites.AppleScript_Suite import seconds
-import json;
+
 from django.shortcuts import render;
 import requests;
-from datetime import date,datetime;
-import pytz;
-import settings;
+
 import secretkeys;
 import refreshtoken;
-from .models import Patient;
+
 
 
 def get_home(request):
