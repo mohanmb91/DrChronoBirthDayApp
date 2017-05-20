@@ -1,55 +1,81 @@
 # Create your views here.
-from django.shortcuts import render
-import datetime, requests
+from StdSuites.AppleScript_Suite import seconds
+import json;
+from django.shortcuts import render;
+import requests;
+from datetime import date,datetime;
+import pytz;
 import settings;
+import secretkeys;
+
+from .models import Patient;
 
 
-def get_code(request):
-    code = "";
+def get_home(request):
+    template = "home.html";
 
-    code = request.GET.get('code', 'NotFound');
-    template = "index.html";
-
-    if (code != 'NotFound'):
+    if (secretkeys.ACCESS_TOKEN == None ):
+        secretkeys.oauth_code = request.GET.get('code');
         response = requests.post('https://drchrono.com/o/token/', data={
-            'code': code,
+            'code': secretkeys.oauth_code,
             'grant_type': 'authorization_code',
-            'redirect_uri': 'http://127.0.0.1:8000/',
-            'client_id': 'IuGRAtJPk75wnuLOS8Wy90bC6DOm1B8t5Yyvm9pA',
-            'client_secret': 'fejjegW0rUu2CJE12IeB5JGf7BDu6YhoVTdSvCHmyJX2JngJvRRB5xwJVhWmDQ7cxQ2JlNw7TeyLbpTLSigpm0vjp6WAQpFNlzsUJtZULxzrkpcm0BB3Z9dDly2zOfTZ',
+            'redirect_uri': secretkeys.redirect_uri,
+            'client_id': secretkeys.client_id,
+            'client_secret': secretkeys.client_secret,
         })
-        response.raise_for_status()
-        data = response.json()
+        if(response.status_code == "401"):
+            response = requests.post('https://drchrono.com/o/token/', data={
+                'refresh_token': secretkeys.REFRESH_TOKEN,
+                'grant_type': 'refresh_token',
+                'client_id': secretkeys.client_id,
+                'client_secret': secretkeys.client_secret,
+            })
 
-        access_token = data['access_token']
-        settings.ACCESS_TOKEN = access_token;
-        refresh_token = data['refresh_token']
-        context = {'codeKey': code, 'access_token': access_token, 'refresh_token': refresh_token};
-
-        response = requests.get('https://drchrono.com/api/users/current', headers={
-            'Authorization': 'Bearer %s' % access_token,
-        })
-        response.raise_for_status()
-        data = response.json()
+        if secretkeys.ACCESS_TOKEN == None :
+            data = response.json();
+            secretkeys.ACCESS_TOKEN = data['access_token']
+        if secretkeys.REFRESH_TOKEN == None:
+            data = response.json();
+            secretkeys.REFRESH_TOKEN = data['refresh_token']
 
 
-        # You can store this in your database along with the tokens
-        username = data['username']
-        print username;
+    data = getcurrentuserinfo();
+    username = data['username']
+    patients = getpatients();
+    context = {'currentuser': username,"patients_data":patients};
+    return render(request, template, context);
 
-        headers = {
-            'Authorization': 'Bearer %s' % access_token,
-        }
 
-        patients = []
-        patients_url = 'https://drchrono.com/api/patients_summary'
-        while patients_url:
-            data = requests.get(patients_url, headers=headers).json()
-            patients.extend(data['results'])
-            patients_url = data['next']  # A JSON null on the last page
-        print patients;
-        return render(request, template, context);
-    else:
-        context = {'codeKey': code};
-        return render(request, template, context);
 
+def get_access(request):
+    link = "https://drchrono.com/o/authorize/?redirect_uri="+secretkeys.redirect_uri+"&response_type=code&client_id="+secretkeys.client_id+"&scope=patients:summary:read";
+    context = {'currentuser': 'Anonymous user','authorizelink':link};
+    template = "index.html";
+    return render(request, template, context);
+
+def wishpatient(request,id):
+    pass;
+
+
+def getpatients():
+    patients = []
+    patients_url = 'https://drchrono.com/api/patients_summary'
+    while patients_url:
+        data = requests.get(patients_url, headers={
+            'Authorization': 'Bearer %s' % secretkeys.ACCESS_TOKEN,
+        }).json()
+        patientlist = data['results'];
+        for each_patient in patientlist:
+            patients.append(each_patient);
+        patients_url = data['next'];
+    return patients;
+
+
+
+def getcurrentuserinfo():
+    response = requests.get('https://drchrono.com/api/users/current', headers={
+        'Authorization': 'Bearer %s' % secretkeys.ACCESS_TOKEN,
+    });
+    response.raise_for_status()
+    data = response.json();
+    return data;

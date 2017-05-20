@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BirthDay Reminder - Home Page</title>
+</head>
+<body>
+    <div>
+        <center>Welcome {{currentuser}}</center>
+    </div>
+  <div>
+      <center>
+           <!-- {u'first_name': u'Daniel', u'last_name': u'Kivatinos', u'doctor': 135724, 1>
+           u'gender': u'Male', u'date_of_birth': u'1979-08-01', u'chart_id': u'KIDA000003', u'id': 64978736} -->
+          <table>
+          <tr>
+              <th>  First Name </th>
+              <th>  Last Name </th>
+              <th>  Gender </th>
+              <th>  Date of Birth </th>
+              <th>  Wish Birth Day </th>
+          </tr>
+
+          {% for patient in patients_data %}
+           {% if not patient.date_of_birth == None %}
+            <tr>
+              <td> {{patient.first_name}} </td>
+              <td> {{patient.last_name}}</td>
+              <td> {{patient.gender}}</td>
+              <td> {{patient.date_of_birth}}</td>
+                <td>
+                    <a href="/wishpatient/{patient}">
+                        <button type="submit"> wish</button>
+                    </a>
+                </td>
+            </tr>
+           {% endif %}
+          {% endfor %}
+          </table>
+      </center>
+  </div>
+
+</body>
+</html>
