@@ -7,7 +7,7 @@ from datetime import date,datetime;
 import pytz;
 import settings;
 import secretkeys;
-
+import refreshtoken;
 from .models import Patient;
 
 
@@ -34,9 +34,10 @@ def get_home(request):
         if secretkeys.ACCESS_TOKEN == None :
             data = response.json();
             secretkeys.ACCESS_TOKEN = data['access_token']
-        if secretkeys.REFRESH_TOKEN == None:
-            data = response.json();
             secretkeys.REFRESH_TOKEN = data['refresh_token']
+            secretkeys.ACCESS_TOKEN_EXPIRES_IN = data['expires_in']
+            refreshtoken.countdown_refresh_accesstoken(secretkeys.ACCESS_TOKEN_EXPIRES_IN)
+
 
 
     data = getcurrentuserinfo();
