@@ -3,7 +3,7 @@ from StdSuites.AppleScript_Suite import seconds
 
 from django.shortcuts import render;
 import requests;
-
+import globaldata;
 import secretkeys;
 import refreshtoken;
 
@@ -53,7 +53,10 @@ def get_access(request):
     return render(request, template, context);
 
 def wishpatient(request,id):
-    pass;
+    patient_data =  globaldata.patients_records[str(id)];
+    context = {'patient':patient_data};
+    template = "patientdetails.html";
+    return render(request, template, context);
 
 
 def getpatients():
@@ -65,6 +68,8 @@ def getpatients():
         }).json()
         patientlist = data['results'];
         for each_patient in patientlist:
+            #print "id is == >{0}".format(each_patient.id);
+            globaldata.patients_records[str(each_patient['id'])] = each_patient;
             patients.append(each_patient);
         patients_url = data['next'];
     return patients;
