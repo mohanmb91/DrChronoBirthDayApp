@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Wish BirthDay for {{patient.first_name}}  {{patient.last_name}}</title>
-</head>
+{% include 'bootstrap.html' %}
 <body>
-    happy Bday to {{patient.first_name}}
-    <div>
-        {{patient}}
+    {% include 'navbar.html' %}
+    <div class="container">
+        <div class="jumbotron">
+            <h1>wanna Wish BirthDay for {{patient.first_name}}  {{patient.last_name}} !!</p> </h1>
+        </div>
+        <form>
+        <div class="form-group">
+            <label for="email">Email address:</label>
+            <input type="email" class="form-control" id="email">
+        </div>
+        <div class="form-group">
+            <label for="BirthDayMessage">BirthDay Messge:</label>
+            <textarea class="form-control" rows="5" id="BirthDayMessage"></textarea>
+        </div>
+        <center>
+            <button type="submit" class="btn btn-primary">Send Email</button>
+        </center>
+    </form>
     </div>
+
 </body>
 </html>
