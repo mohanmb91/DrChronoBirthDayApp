@@ -16,12 +16,9 @@ def refreshtoken(isRefresh):
             'redirect_uri' : secretkeys.redirect_uri,
         })
         data = response.json();
-        print (data);
-        print("old Access Token {0}".format(secretkeys.ACCESS_TOKEN));
         secretkeys.ACCESS_TOKEN = data['access_token'];
         secretkeys.REFRESH_TOKEN = data['refresh_token'];
         secretkeys.ACCESS_TOKEN_EXPIRES_IN = data['expires_in'];
-        print("new Access Token {0}".format(secretkeys.ACCESS_TOKEN));
     else:
         response = requests.post('https://drchrono.com/o/revoke_token/', data={
             'client_id': secretkeys.client_id,
