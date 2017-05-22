@@ -57,8 +57,8 @@ def getpatients():
         patients_url = data['next'];
     return patients;
 ```
-- Step 2: With the help of bootstrap I have designed the following page.
-<img width="1419" alt="screen shot 2017-05-21 at 7 01 01 pm" src="https://cloud.githubusercontent.com/assets/14867067/26290432/492f4c9e-3e5c-11e7-9da2-f437baae7e9a.png">
+- Step 2: With the help of bootstrap I have designed the following page. As you can see the patients data are sorted based on most recent upcoming birthday's.  
+
 - STEP 3: On click of the Wish button, I am transferring the user_id as an parameter in URL and loading the particular user details into a page and thus, allowing the logged in user to send email for the patient. Below is the following image that gives us a clear picture on how the wish page for Amenda looks like. 
 <img width="1378" alt="screen shot 2017-05-21 at 7 04 15 pm" src="https://cloud.githubusercontent.com/assets/14867067/26290551/43c95f00-3e5d-11e7-8024-ba5adab6aeea.png">
 
