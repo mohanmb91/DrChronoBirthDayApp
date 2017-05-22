@@ -7,7 +7,9 @@
         <div class="jumbotron">
             <h1>wanna Wish BirthDay for {{patient.first_name}}  {{patient.last_name}} !!</p> </h1>
         </div>
-        <form>
+    <form action="/home/sendemail" method="post">
+        {% csrf_token %}
+        {{ form }}
         <div class="form-group">
             <label for="email">Email address:</label>
             <input type="email" class="form-control" id="email">

@@ -1,11 +1,19 @@
 # Create your views here.
 from StdSuites.AppleScript_Suite import seconds
 
-from django.shortcuts import render;
+from django.shortcuts import render,redirect
+from django.core.mail import send_mail
+from django.conf import settings
+
 import requests;
 import globaldata;
 import secretkeys;
 import refreshtoken;
+
+from django.http import HttpResponse
+from django.template import Context
+from django.template.loader import get_template
+
 
 
 
@@ -42,6 +50,7 @@ def get_home(request):
     username = data['username']
     patients = getpatients();
     context = {'currentuser': username,"patients_data":patients};
+
     return render(request, template, context);
 
 
@@ -83,3 +92,14 @@ def getcurrentuserinfo():
     response.raise_for_status()
     data = response.json();
     return data;
+
+
+def sendEmail(request):
+    send_mail("HappyBday", "xyz",settings.EMAIL_HOST_USER,["mohankumarmbuniv@gmail.com"],fail_silently=False);
+    data = getcurrentuserinfo();
+    username = data['username']
+    patients = getpatients();
+    context = {'currentuser': username, "patients_data": patients};
+    template = get_template("home.html")
+    html = template.render(Context(context));
+    return HttpResponse(html)

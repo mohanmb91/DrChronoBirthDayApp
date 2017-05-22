@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^$', views.get_access,name = "cId"),
     url(r'^home/$' , views.get_home, name='home'),
     url(r'^home/wishpatient/(?P<id>\d+)/$', views.wishpatient),
+    url(r'^home/sendemail',views.sendEmail),
 
     #url(r'', include('social.apps.django_app.urls', namespace='social')),
 ]
