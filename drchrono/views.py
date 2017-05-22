@@ -1,11 +1,19 @@
 # Create your views here.
 from StdSuites.AppleScript_Suite import seconds
 
-from django.shortcuts import render;
+from django.shortcuts import render,redirect
+from django.core.mail import send_mail
+from django.conf import settings
+
 import requests;
 import globaldata;
 import secretkeys;
 import refreshtoken;
+
+from django.http import HttpResponse
+from django.template import Context
+from django.template.loader import get_template
+
 
 
 
@@ -35,15 +43,14 @@ def get_home(request):
             secretkeys.REFRESH_TOKEN = data['refresh_token']
             secretkeys.ACCESS_TOKEN_EXPIRES_IN = data['expires_in']
             refreshtoken.countdown_refresh_accesstoken(secretkeys.ACCESS_TOKEN_EXPIRES_IN)
-
-
-
     data = getcurrentuserinfo();
     username = data['username']
     patients = getpatients();
-    context = {'currentuser': username,"patients_data":patients};
-    return render(request, template, context);
+    template = get_template(template);
 
+    context = {'currentuser': username,"patients_data":patients};
+    html = template.render(Context(context));
+    return HttpResponse(html);
 
 
 def get_access(request):
@@ -65,10 +72,9 @@ def getpatients():
     while patients_url:
         data = requests.get(patients_url, headers={
             'Authorization': 'Bearer %s' % secretkeys.ACCESS_TOKEN,
-        }).json()
+        }).json();
         patientlist = data['results'];
         for each_patient in patientlist:
-            #print "id is == >{0}".format(each_patient.id);
             globaldata.patients_records[str(each_patient['id'])] = each_patient;
             patients.append(each_patient);
         patients_url = data['next'];
@@ -83,3 +89,11 @@ def getcurrentuserinfo():
     response.raise_for_status()
     data = response.json();
     return data;
+
+
+def sendEmail(request):
+    email = request.POST['email'];
+    message = request.POST['BirthDayMessage'];
+    subject = request.POST['subject'];
+    send_mail(subject, message,settings.EMAIL_HOST_USER,[email],fail_silently=False);
+    return redirect('/home')
