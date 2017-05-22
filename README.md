@@ -1,4 +1,4 @@
-# Oauth authorization is done by executing the following steps: 
+# Oauth authorization:
 
 - STEP 1:  I have placed an Authorize button through which request parameter's 
 `redirect_uri, response_type, client_id, scope` are passed to this API https://drchrono.com/o/authorize/. In response I will be getting a value in code parameter. 
