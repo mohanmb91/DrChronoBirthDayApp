@@ -91,7 +91,7 @@ $ pip install -r requirements.txt
 $ python manage.py runserver
 ```
 # Note: 
-- I have not update my secretkeys.py which has my client Id and client screct and also this file maintains access_code as well. To run this project create your own secretkeys.py and assign values to these valiables.
+- I have not checked in my secretkeys.py which has my client Id and client screct and also this file maintains access_code as well. To run this project create your own secretkeys.py and assign values to these valiables.
 ```
 secret_key = '';
 client_id = '';
