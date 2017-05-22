@@ -93,10 +93,7 @@ $ python manage.py runserver
 # Note: 
 - I have not update my secretkeys.py which has my client Id and client screct and also this file maintains access_code as well. To run this project create your own secretkeys.py and assign values to these valiables.
 ```
-
-
-
-secret_key = 'fejjegW0rUu2CJE12IeB5JGf7BDu6YhoVTdSvCHmyJX2JngJvRRB5xwJVhWmDQ7cxQ2JlNw7TeyLbpTLSigpm0vjp6WAQpFNlzsUJtZULxzrkpcm0BB3Z9dDly2zOfTZ';
+secret_key = '';
 client_id = '';
 client_secret ='';
 redirect_uri = '';
