@@ -1,19 +1,18 @@
 
 <!DOCTYPE html>
 <html>
+    {% include 'bootstrap.html' %}
     <body>
-        <div>
-            <div>
-                <center>click Below to Authorize Birthday Reminder App</center>
-            </div>
-            <div>
-                <center>
-                <a href={{authorizelink}}>
-                kindly click here to authorize !!
-                </a>
+    {% include 'navbar.html' %}
+    <div class="container">
+        <div class="jumbotron">
+        <h1><center>click Below to Authorize Birthday Reminder App</center></p> </h1>
+            <center>
+        <a href={{authorizelink}}>
+            <button type="button" class="btn btn-primary">kindly click here to authorize !!</button>
+        </a>
                 </center>
-                </a>
-            </div>
         </div>
+    </div>
     </body>
 </html>

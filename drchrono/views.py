@@ -1,14 +1,12 @@
 # Create your views here.
 from StdSuites.AppleScript_Suite import seconds
-import json;
+
 from django.shortcuts import render;
 import requests;
-from datetime import date,datetime;
-import pytz;
-import settings;
+import globaldata;
 import secretkeys;
+import refreshtoken;
 
-from .models import Patient;
 
 
 def get_home(request):
@@ -34,9 +32,10 @@ def get_home(request):
         if secretkeys.ACCESS_TOKEN == None :
             data = response.json();
             secretkeys.ACCESS_TOKEN = data['access_token']
-        if secretkeys.REFRESH_TOKEN == None:
-            data = response.json();
             secretkeys.REFRESH_TOKEN = data['refresh_token']
+            secretkeys.ACCESS_TOKEN_EXPIRES_IN = data['expires_in']
+            refreshtoken.countdown_refresh_accesstoken(secretkeys.ACCESS_TOKEN_EXPIRES_IN)
+
 
 
     data = getcurrentuserinfo();
@@ -54,7 +53,10 @@ def get_access(request):
     return render(request, template, context);
 
 def wishpatient(request,id):
-    pass;
+    patient_data =  globaldata.patients_records[str(id)];
+    context = {'patient':patient_data};
+    template = "patientdetails.html";
+    return render(request, template, context);
 
 
 def getpatients():
@@ -66,6 +68,8 @@ def getpatients():
         }).json()
         patientlist = data['results'];
         for each_patient in patientlist:
+            #print "id is == >{0}".format(each_patient.id);
+            globaldata.patients_records[str(each_patient['id'])] = each_patient;
             patients.append(each_patient);
         patients_url = data['next'];
     return patients;
