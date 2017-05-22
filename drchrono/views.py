@@ -4,12 +4,11 @@ from StdSuites.AppleScript_Suite import seconds
 from django.shortcuts import render,redirect
 from django.core.mail import send_mail
 from django.conf import settings
-
 import requests;
 import globaldata;
 import secretkeys;
 import refreshtoken;
-
+from datetime import datetime as dt
 from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import get_template
@@ -29,20 +28,11 @@ def get_home(request):
             'client_id': secretkeys.client_id,
             'client_secret': secretkeys.client_secret,
         })
-        if(response.status_code == "401"):
-            response = requests.post('https://drchrono.com/o/token/', data={
-                'refresh_token': secretkeys.REFRESH_TOKEN,
-                'grant_type': 'refresh_token',
-                'client_id': secretkeys.client_id,
-                'client_secret': secretkeys.client_secret,
-            })
-
-        if secretkeys.ACCESS_TOKEN == None :
-            data = response.json();
-            secretkeys.ACCESS_TOKEN = data['access_token']
-            secretkeys.REFRESH_TOKEN = data['refresh_token']
-            secretkeys.ACCESS_TOKEN_EXPIRES_IN = data['expires_in']
-            refreshtoken.countdown_refresh_accesstoken(secretkeys.ACCESS_TOKEN_EXPIRES_IN)
+        data = response.json();
+        secretkeys.ACCESS_TOKEN = data['access_token']
+        secretkeys.REFRESH_TOKEN = data['refresh_token']
+        secretkeys.ACCESS_TOKEN_EXPIRES_IN = data['expires_in']
+        refreshtoken.countdown_refresh_accesstoken(secretkeys.ACCESS_TOKEN_EXPIRES_IN)
     data = getcurrentuserinfo();
     username = data['username']
     patients = getpatients();
@@ -75,12 +65,14 @@ def getpatients():
         }).json();
         patientlist = data['results'];
         for each_patient in patientlist:
-            globaldata.patients_records[str(each_patient['id'])] = each_patient;
-            patients.append(each_patient);
+            if not each_patient['date_of_birth'] == None:
+                globaldata.patients_records[str(each_patient['id'])] = each_patient;
+                patients.append(each_patient);
         patients_url = data['next'];
+        now=dt.now()
+        patients = sorted(patients, key=lambda x: (dt.strptime(str(now.year + 1) + x["date_of_birth"][4:], '%Y-%m-%d') - now).days % 365)
+
     return patients;
-
-
 
 def getcurrentuserinfo():
     response = requests.get('https://drchrono.com/api/users/current', headers={
