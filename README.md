@@ -57,20 +57,29 @@ def getpatients():
         patients_url = data['next'];
     return patients;
 ```
-
 - Step 2: With the help of bootstrap I have designed the following page.
-
 <img width="1419" alt="screen shot 2017-05-21 at 7 01 01 pm" src="https://cloud.githubusercontent.com/assets/14867067/26290432/492f4c9e-3e5c-11e7-9da2-f437baae7e9a.png">
-
 - STEP 3: On click of the Wish button, I am transferring the user_id as an parameter in URL and loading the particular user details into a page and thus, allowing the logged in user to send email for the patient. Below is the following image that gives us a clear picture on how the wish page for Amenda looks like. 
-
 <img width="1378" alt="screen shot 2017-05-21 at 7 04 15 pm" src="https://cloud.githubusercontent.com/assets/14867067/26290551/43c95f00-3e5d-11e7-8024-ba5adab6aeea.png">
 
+# Send Email for the patient. 
 
+- With the following code I am able to send email to the patient. 
+```
+def sendEmail(request):
+email = request.POST['email'];
+message = request.POST['BirthDayMessage'];
+subject = request.POST['subject'];
+send_mail(subject, message,settings.EMAIL_HOST_USER,[email],fail_silently=False);
+return redirect('/home')
+```
 
+- To do this I need patient's email which will not be provided for the Interview candidate's like me. which leaves me with one choice, to get email address from the user itself. To test my email functionality I have selected Patient Amenda to wish her and decided to use my email instead.
+<img width="1354" alt="screen shot 2017-05-21 at 7 05 33 pm" src="https://cloud.githubusercontent.com/assets/14867067/26290734/8e507ecc-3e5e-11e7-9e9f-d1ec7ad13c8b.png">
 
+# Hurray successfully I got the Email. 
 
-# drchrono Hackathon
+<img width="976" alt="screen shot 2017-05-21 at 7 06 15 pm" src="https://cloud.githubusercontent.com/assets/14867067/26290765/d2f450ee-3e5e-11e7-8ab1-357115bc2f87.png">
 
 ### Requirements
 - [pip](https://pip.pypa.io/en/stable/)
@@ -81,12 +90,21 @@ def getpatients():
 $ pip install -r requirements.txt
 $ python manage.py runserver
 ```
-
-`social_auth_drchrono/` contains a custom provider for [Python Social Auth](http://psa.matiasaguirre.net/) that handles OAUTH for drchrono. To configure it, set these fields in your `drchrono/settings.py` file:
-
+# Note: 
+- I have not update my secretkeys.py which has my client Id and client screct and also this file maintains access_code as well. To run this project create your own secretkeys.py and assign values to these valiables.
 ```
-SOCIAL_AUTH_DRCHRONO_KEY
-SOCIAL_AUTH_DRCHRONO_SECRET
-SOCIAL_AUTH_DRCHRONO_SCOPE
-LOGIN_REDIRECT_URL
+
+
+
+secret_key = 'fejjegW0rUu2CJE12IeB5JGf7BDu6YhoVTdSvCHmyJX2JngJvRRB5xwJVhWmDQ7cxQ2JlNw7TeyLbpTLSigpm0vjp6WAQpFNlzsUJtZULxzrkpcm0BB3Z9dDly2zOfTZ';
+client_id = '';
+client_secret ='';
+redirect_uri = '';
+ACCESS_TOKEN = None;
+REFRESH_TOKEN = None;
+oauth_code = None;
+ACCESS_TOKEN_EXPIRES_IN = None;
+
+GMAIL_ID = '';
+GMAIL_PASSWORD = '';
 ```
