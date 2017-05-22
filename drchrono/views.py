@@ -49,10 +49,12 @@ def get_home(request):
     data = getcurrentuserinfo();
     username = data['username']
     patients = getpatients();
+    template = get_template(template);
+
     context = {'currentuser': username,"patients_data":patients};
-
-    return render(request, template, context);
-
+    html = template.render(Context(context));
+    #return render(request, template, context);
+    return HttpResponse(html);
 
 
 def get_access(request):
@@ -74,7 +76,7 @@ def getpatients():
     while patients_url:
         data = requests.get(patients_url, headers={
             'Authorization': 'Bearer %s' % secretkeys.ACCESS_TOKEN,
-        }).json()
+        }).json();
         patientlist = data['results'];
         for each_patient in patientlist:
             #print "id is == >{0}".format(each_patient.id);
@@ -95,11 +97,14 @@ def getcurrentuserinfo():
 
 
 def sendEmail(request):
-    send_mail("HappyBday", "xyz",settings.EMAIL_HOST_USER,["mohankumarmbuniv@gmail.com"],fail_silently=False);
+    email = request.POST['email'];
+    message = request.POST['BirthDayMessage'];
+    subject = request.POST['subject'];
+    send_mail(subject, message,settings.EMAIL_HOST_USER,[email],fail_silently=False);
     data = getcurrentuserinfo();
     username = data['username']
     patients = getpatients();
     context = {'currentuser': username, "patients_data": patients};
     template = get_template("home.html")
     html = template.render(Context(context));
-    return HttpResponse(html)
+    return redirect('/home')

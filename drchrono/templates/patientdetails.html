@@ -10,13 +10,41 @@
     <form action="/home/sendemail" method="post">
         {% csrf_token %}
         {{ form }}
-        <div class="form-group">
-            <label for="email">Email address:</label>
-            <input type="email" class="form-control" id="email">
+        <div clas="form-group">
+            <label class="control-label col-sm-2">Patient First Name:</label>
+            <div class="col-sm-10">
+              <p class="form-control-static">{{patient.first_name}}</p>
+            </div>
+        </div>
+        <div clas="form-group">
+            <label class="control-label col-sm-2">Patient Last Name:</label>
+            <div class="col-sm-10">
+              <p class="form-control-static">{{patient.last_name}}</p>
+            </div>
+        </div>
+        <div clas="form-group">
+            <label class="control-label col-sm-2">Patient Gender:</label>
+            <div class="col-sm-10">
+              <p class="form-control-static">{{patient.gender}}</p>
+            </div>
+        </div>
+        <div clas="form-group">
+            <label class="control-label col-sm-2">Patient Date Of Birth:</label>
+            <div class="col-sm-10">
+                <p class="form-control-static">{{patient.date_of_birth}}</p>
+            </div>
         </div>
         <div class="form-group">
-            <label for="BirthDayMessage">BirthDay Messge:</label>
-            <textarea class="form-control" rows="5" id="BirthDayMessage"></textarea>
+            <label>Enter Patient's Email address:</label>
+            <input type="email" class="form-control" name="email" required>
+        </div>
+         <div class="form-group">
+            <label>Enter Subject for Email:</label>
+            <input type="text" class="form-control" name="subject" required>
+        </div>
+        <div class="form-group">
+            <label >BirthDay Messge:</label>
+            <textarea class="form-control" rows="5" name="BirthDayMessage" required></textarea>
         </div>
         <center>
             <button type="submit" class="btn btn-primary">Send Email</button>
