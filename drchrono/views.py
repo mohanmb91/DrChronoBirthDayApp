@@ -43,9 +43,6 @@ def get_home(request):
             secretkeys.REFRESH_TOKEN = data['refresh_token']
             secretkeys.ACCESS_TOKEN_EXPIRES_IN = data['expires_in']
             refreshtoken.countdown_refresh_accesstoken(secretkeys.ACCESS_TOKEN_EXPIRES_IN)
-
-
-
     data = getcurrentuserinfo();
     username = data['username']
     patients = getpatients();
@@ -53,7 +50,6 @@ def get_home(request):
 
     context = {'currentuser': username,"patients_data":patients};
     html = template.render(Context(context));
-    #return render(request, template, context);
     return HttpResponse(html);
 
 
@@ -79,7 +75,6 @@ def getpatients():
         }).json();
         patientlist = data['results'];
         for each_patient in patientlist:
-            #print "id is == >{0}".format(each_patient.id);
             globaldata.patients_records[str(each_patient['id'])] = each_patient;
             patients.append(each_patient);
         patients_url = data['next'];
@@ -101,10 +96,4 @@ def sendEmail(request):
     message = request.POST['BirthDayMessage'];
     subject = request.POST['subject'];
     send_mail(subject, message,settings.EMAIL_HOST_USER,[email],fail_silently=False);
-    data = getcurrentuserinfo();
-    username = data['username']
-    patients = getpatients();
-    context = {'currentuser': username, "patients_data": patients};
-    template = get_template("home.html")
-    html = template.render(Context(context));
     return redirect('/home')
