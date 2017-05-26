@@ -6,12 +6,12 @@ from datetime import datetime as date
 
 
 class Patient(models.Model):
-    first_name = models.CharField(max_length=20);
-    last_name = models.CharField(max_length=20);
-    doctor = models.PositiveIntegerField();
-    gender = models.CharField(max_length=60);
+    first_name = models.CharField(default="",max_length=20);
+    last_name = models.CharField(default="",max_length=20);
+    doctor = models.PositiveIntegerField(default=-1);
+    gender = models.CharField(default="Male",max_length=60);
     date_of_birth = models.CharField(default=str(date.now()), max_length= 10);
-    chart_id = models.IntegerField();
+    chart_id = models.IntegerField(default=-1);
     id = models.IntegerField(max_length=12,primary_key=True);
 
 
