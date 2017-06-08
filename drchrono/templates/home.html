@@ -23,7 +23,8 @@
                 <td> {{patient.gender}}</td>
                 <td> {{patient.date_of_birth}}</td>
                 <td>
-                <a href="wishpatient/{{patient.id}}">
+
+                <a href="{% url 'wishPatient' id=patient.id %}">
                 <button type="submit" class = "btn btn-success"> wish {% if patient.gender == "Male" %} him {% endif %} {% if patient.gender == "Female" %} her {% endif %}</button>
                 </a>
                 </td>
