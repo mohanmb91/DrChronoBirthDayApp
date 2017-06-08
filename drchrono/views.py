@@ -12,12 +12,38 @@ from datetime import datetime as dt
 from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import get_template
+from django.views.generic.base import TemplateView;
 
+class GetHome(TemplateView):
+    template_name = "home.html";
 
+    def get_context_data(self, **kwargs):
+        context = super(GetHome, self).get_context_data(**kwargs);
+        if (secretkeys.ACCESS_TOKEN == None):
+            secretkeys.oauth_code = self.request.GET.get('code');
+            response = requests.post('https://drchrono.com/o/token/', data={
+                'code': secretkeys.oauth_code,
+                'grant_type': 'authorization_code',
+                'redirect_uri': secretkeys.redirect_uri,
+                'client_id': secretkeys.client_id,
+                'client_secret': secretkeys.client_secret,
+            })
+            data = response.json();
+            secretkeys.ACCESS_TOKEN = data['access_token']
+            secretkeys.REFRESH_TOKEN = data['refresh_token']
+            secretkeys.ACCESS_TOKEN_EXPIRES_IN = data['expires_in']
+            refreshtoken.countdown_refresh_accesstoken(secretkeys.ACCESS_TOKEN_EXPIRES_IN)
+        data = getcurrentuserinfo();
+        username = data['username']
+        patients = getpatients();
+        template = get_template(GetHome.template_name);
+
+        context = {'currentuser': username, "patients_data": patients};
+        return context;
 
 
 def get_home(request):
-    template = "home.html";
+    template_name = "home.html";
 
     if (secretkeys.ACCESS_TOKEN == None ):
         secretkeys.oauth_code = request.GET.get('code');
@@ -36,7 +62,7 @@ def get_home(request):
     data = getcurrentuserinfo();
     username = data['username']
     patients = getpatients();
-    template = get_template(template);
+    template = get_template(template_name);
 
     context = {'currentuser': username,"patients_data":patients};
     html = template.render(Context(context));
@@ -46,14 +72,18 @@ def get_home(request):
 def get_access(request):
     link = "https://drchrono.com/o/authorize/?redirect_uri="+secretkeys.redirect_uri+"&response_type=code&client_id="+secretkeys.client_id+"&scope=patients:summary:read";
     context = {'currentuser': 'Anonymous user','authorizelink':link};
-    template = "index.html";
-    return render(request, template, context);
+    template_name = "index.html";
+    template = get_template(template_name);
+    html = template.render(Context(context));
+    return HttpResponse(html);
 
 def wishpatient(request,id):
     patient_data =  globaldata.patients_records[str(id)];
     context = {'patient':patient_data};
-    template = "patientdetails.html";
-    return render(request, template, context);
+    template_name = "patientdetails.html";
+    template = get_template(template_name);
+    html = template.render(Context(context));
+    return HttpResponse(html);
 
 
 def getpatients():
